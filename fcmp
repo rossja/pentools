@@ -1,0 +1,36 @@
+#!/usr/bin/perl -w
+use strict;
+
+my $file1 = shift or &usage();
+my $file2 = shift or &usage();
+
+open(my $FILE1, "< $file1");
+   my @file1 = <$FILE1>;
+close($FILE1);
+
+open(my $FILE2, "< $file2");
+   my @file2 = <$FILE2>;
+close($FILE2);
+
+my(@union, @intersection, @difference, %count, $element);
+@union = @intersection = @difference = ();
+
+%count = ();
+foreach $element (@file1, @file2) { $count{$element}++ }
+foreach $element (keys %count) {
+   push @union, $element;
+   push @{ $count{$element} > 1 ? \@intersection : \@difference }, $element;
+}  
+
+print @difference;
+
+sub usage() {
+   print "
+      fcmp compares 2 files and spits out the difference.
+      usage:
+
+         fcmp file1 file2
+
+   ";
+   exit 0;
+}

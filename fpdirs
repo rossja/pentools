@@ -1,0 +1,14 @@
+#!/bin/bash
+# simple check for frontpage extensions on a web server
+# takes a uri in the form of "http://server.domain" as a param
+# supports all the protocols wget does, since all this does
+# is call wget a bunch of times.
+WEBHOST=$1
+OUTPUT=fpdirs.txt
+
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/postinfo.html > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/_vti_inf.html > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/_vti_bin > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/_vti_pvt > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/cgi-bin/htimage.exe > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/cgi-bin/imagemap.exe > /dev/null 2>&1

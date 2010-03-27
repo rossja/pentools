@@ -1,0 +1,3 @@
+#!/bin/bash
+# simple DNS version check using BIND chaos request
+dig @${1} version.bind chaos txt

@@ -1,0 +1,3 @@
+#!/bin/bash
+# greps out comments from source code
+egrep -r "\/\*|^\/\/|\s\/\/|\<\!" * |grep -v Binary
