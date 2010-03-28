@@ -1,0 +1,24 @@
+#!/bin/bash
+# ----------------------------------------------------
+# a very ugly bash script to
+# automate dig requests to a nameserver
+# 'nmap -sL' is a much more elegant way
+# to do this, but sometimes nmap isn't
+# available where dig (or host) is.
+# this was written for those times.
+# ----------------------------------------------------
+# version: 0.1
+# author: jason ross <algorythm /at/ gmail /dot/ com>
+# ----------------------------------------------------
+BASE="10.1"                # base network
+ESAB="1.10.in-addr-arpa"   # for reverse lookups
+NS="10.1.0.53"             # nameserver
+
+for i in `seq 0 255`; do
+for j in `seq 0 255`; do
+echo $BASE.$i.$j >>$BASE
+#echo "dig @$NS -t PTR $j.$i.$ESAB +short >>$BASE;sleep 10" >>$BASE
+dig @$NS -t PTR $j.$i.$ESAB +short >>$BASE;sleep 10
+done
+done
+
