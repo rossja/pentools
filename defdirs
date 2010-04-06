@@ -1,18 +1,24 @@
 #!/bin/bash
+# simple directory enumerator
+# takes a uri in the form of "http://server.domain" as a param
+# supports all the protocols wget does, since all this does
+# is call wget a bunch of times. 
+OUTPUT=defdirs.txt
 WEBHOST=$1
-wget -S -O /dev/null -a defdirs.txt $WEBHOST/admin > /dev/null 2>&1
-wget -S -O /dev/null -a defdirs.txt $WEBHOST/administrator > /dev/null 2>&1
-wget -S -O /dev/null -a defdirs.txt $WEBHOST/c > /dev/null 2>&1
-wget -S -O /dev/null -a defdirs.txt $WEBHOST/cart > /dev/null 2>&1
-wget -S -O /dev/null -a defdirs.txt $WEBHOST/css > /dev/null 2>&1
-wget -S -O /dev/null -a defdirs.txt $WEBHOST/i > /dev/null 2>&1
-wget -S -O /dev/null -a defdirs.txt $WEBHOST/images > /dev/null 2>&1
-wget -S -O /dev/null -a defdirs.txt $WEBHOST/js > /dev/null 2>&1
-wget -S -O /dev/null -a defdirs.txt $WEBHOST/logs > /dev/null 2>&1
-wget -S -O /dev/null -a defdirs.txt $WEBHOST/old > /dev/null 2>&1
-wget -S -O /dev/null -a defdirs.txt $WEBHOST/script > /dev/null 2>&1
-wget -S -O /dev/null -a defdirs.txt $WEBHOST/scripts > /dev/null 2>&1
-wget -S -O /dev/null -a defdirs.txt $WEBHOST/shop > /dev/null 2>&1
-wget -S -O /dev/null -a defdirs.txt $WEBHOST/store > /dev/null 2>&1
-wget -S -O /dev/null -a defdirs.txt $WEBHOST/temp > /dev/null 2>&1
-wget -S -O /dev/null -a defdirs.txt $WEBHOST/tmp > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/admin > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/administrator > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/c > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/cart > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/css > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/i > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/images > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/js > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/logs > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/old > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/script > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/scripts > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/shop > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/shop/admin > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/store > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/temp > /dev/null 2>&1
+wget -S -O /dev/null -a $OUTPUT $WEBHOST/tmp > /dev/null 2>&1
