@@ -15,6 +15,20 @@
 # - support skipfish wordlist import
 # - handle ARG correctly
 # - support https
+# - actually use rubydoc for comments
+# -----------------------------------
+# Example usage/output:
+# $ ./defdirs.rb localhosti |grep -v 404
+# [403]  http://localhost/.htaccess
+# [403]  http://localhost/.htpasswd
+# [200]  http://localhost/index
+# [301]  http://localhost/javascript
+# [403]  http://localhost/javascript
+# [200]  http://localhost/main
+# [200]  http://localhost/server-status
+# [301]  http://localhost/store
+# [200]  http://localhost/store
+#
 # -----------------------------------
 
 require 'net/http'
