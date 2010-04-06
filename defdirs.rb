@@ -18,7 +18,7 @@
 # - actually use rubydoc for comments
 # -----------------------------------
 # Example usage/output:
-# $ ./defdirs.rb localhosti |grep -v 404
+# $ ./defdirs.rb localhost |grep -v 404
 # [403]  http://localhost/.htaccess
 # [403]  http://localhost/.htpasswd
 # [200]  http://localhost/index
