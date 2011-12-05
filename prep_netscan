@@ -1,0 +1,43 @@
+#!/bin/bash
+# ----------------------------------------------------
+# script to set up for a
+# basic network scan and pentest
+# ----------------------------------------------------
+# presumes:
+#   * it's being run in a directory empty except for:
+#   * a targets.txt file with target hosts listed 1 IP per line
+# ----------------------------------------------------
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# ----------------------------------------------------
+# Copyright 2010 Jason Ross <algorythm /at/ gmail /dot/ com>
+# ----------------------------------------------------
+# version: 0.1
+# ----------------------------------------------------
+iface="eth0"
+
+wget -O src_ip http://whatismyip.org
+echo -e "\n" >> src_ip
+
+# create the directory structure
+mkdir nmap nessus svcs
+mkdir nmap/output
+
+# -------------------------------------
+# create the initial nmap scan script
+echo -e "#!/bin/bash\nsudo nmap -e ${iface} -vvv -A -sS -PN -T3 --max-rate 300 --min-rate 100 --max-retries 3 --top-ports 1000 --defeat-rst-ratelimit -oA output/initial_scan -iL ../targets.txt" > nmap/initial_scan
+chmod +x nmap/initial_scan
+
+# create the nmap misc_scans script
+echo -e "#!/bin/bash\nsudo nmap -e ${iface} -vvv -PN -sS --max-rate 350 -pT:80,443,8000,8080,8443,8888 -oA output/web_svcs -iL ../targets.txt \n\nsudo nmap -e ${iface} -vvv -PN -sS --max-rate 350 -pT:49,65,389,636,1812,1813 -oA output/auth_svcs -iL ../targets.txt\n\nsudo nmap -e ${iface} -vvv -PN -T4 --max-rate 350 -sU -pU:49,53,65,69,123,137,139,161,1812,1813,5060 -oA output/select_udp -iL ../targets.txt\n\nsudo nmap -sP -iL ../targets.txt -oG output/ping_sweep" > nmap/misc_scans
+chmod +x nmap/misc_scans
