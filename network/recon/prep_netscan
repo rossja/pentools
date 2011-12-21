@@ -41,3 +41,7 @@ chmod +x nmap/initial_scan
 # create the nmap misc_scans script
 echo -e "#!/bin/bash\nsudo nmap -e ${iface} -vvv -PN -sS --max-rate 350 -pT:80,443,8000,8080,8443,8888 -oA output/web_svcs -iL ../targets.txt \n\nsudo nmap -e ${iface} -vvv -PN -sS --max-rate 350 -pT:49,65,389,636,1812,1813 -oA output/auth_svcs -iL ../targets.txt\n\nsudo nmap -e ${iface} -vvv -PN -T4 --max-rate 350 -sU -pU:49,53,65,69,123,137,139,161,1812,1813,5060 -oA output/select_udp -iL ../targets.txt\n\nsudo nmap -sP -iL ../targets.txt -oG output/ping_sweep" > nmap/misc_scans
 chmod +x nmap/misc_scans
+
+# create the icmp_scans script
+echo -e "#!/bin/bash\nsudo nmap -e ${iface} -PE -oA output/icmp_echo -iL ../targets.txt\n\nsudo nmap -e ${iface} -PP -oA output/icmp_timestamp -iL ../targets.txt\n\nsudo nmap -e ${iface} -PM -oA output/icmp_netmask -iL ../targets.txt\n" > nmap/icmp_scans
+chmod +x nmap/icmp_scans
