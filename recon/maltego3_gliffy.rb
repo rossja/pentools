@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-#!/usr/bin/env ruby
 # ----------------------------------------------------
 # takes a maltego Phrase entity as input: "bank"
 # runs a google dork for gliffy diagrams matching
@@ -22,12 +21,27 @@
 # ----------------------------------------------------
 # version: 0.1
 # ----------------------------------------------------
-
 require 'nokogiri'
 require 'open-uri'
-qterm = ARGV[0]
-rslt = Nokogiri::HTML(open("http://www.google.com/search?q=inurl%3Agliffy.com%2Fpublish+#{qterm}"))
+require 'uri'
+require 'htmlentities'
 
+# ----------------------------------------------------
+# This next bit is designed to handle the args.
+# Maltego throws everything to the script in a weird
+# way. For example, a query of "bank account" in 
+# maltego would call this script like so:
+#   maltego_gliffy.rb bank account text=bank account
+# Accordingly, we need to split the args, and then
+# URL encode the actual search phrase.
+# ----------------------------------------------------
+args = ARGV.join(" ")
+junk,mterm = args.split('=')
+qterm = URI.escape(mterm)
+
+# ----------------------------------------------------
+# start building the body of the maltego XML output
+# ----------------------------------------------------
 head = <<-"HEAD"
   <MaltegoMessage>
     <MaltegoTransformResponseMessage>
@@ -35,21 +49,35 @@ head = <<-"HEAD"
 HEAD
 puts "#{head}"
 
-# search nodes by css selector
+# ----------------------------------------------------
+# open the google results page and scrape it
+# ----------------------------------------------------
+rslt = Nokogiri::HTML(open("http://www.google.com/search?q=inurl%3Agliffy.com%2Fpublish+#{qterm}"))
+
+# ----------------------------------------------------
+# search results page for hits (using css selector)
+# and wrap the Maltego Entity XML around the results
+# We need to encode XML entities (like '&'), to keep
+# maltego happy, so we use htmlentities for that.
+# ----------------------------------------------------
 rslt.css('h3.r a').each do |lnk|
+  coder = HTMLEntities.new
   data = <<-"DATA"
         <Entity Type="URL">
-          <Value>#{lnk.content}</Value>
+          <Value>#{coder.encode(lnk.content)}</Value>
           <Weight>100</Weight>
           <AdditionalFields>
-            <Field Name="theurl">#{lnk['href']}</Field>
-            <Field Name="fulltitle">#{lnk.content}</Field>
+            <Field Name="theurl">#{coder.encode(lnk['href'])}</Field>
+            <Field Name="fulltitle">#{coder.encode(lnk.content)}</Field>
           </AdditionalFields>
         </Entity>
   DATA
   puts "#{data}"
 end
 
+# ----------------------------------------------------
+# finish building the body of the maltego XML output
+# ----------------------------------------------------
 foot = <<-"FOOT"
       </Entities>
     </MaltegoTransformResponseMessage>
