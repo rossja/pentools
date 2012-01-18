@@ -1,0 +1,36 @@
+#!/bin/bash
+# ----------------------------------------------------
+# brain dead parsing of maltego3 output files
+# splits the output into different text files for
+# easy viewing.
+# ----------------------------------------------------
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#  
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#  
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# ----------------------------------------------------
+# Copyright 2010 Jason Ross <algorythm /at/ gmail /dot/ com>
+# ----------------------------------------------------
+# version: 0.1
+# ----------------------------------------------------
+
+INFILE=$1
+OUTDIR=$2
+
+awk '/DNS/ {print $4}' ${INFILE}|sort -n > ${OUTDIR}/DNSName
+awk '/Domain/ {print $3}' ${INFILE}|sort -n > ${OUTDIR}/Domain
+awk '/Email/ {print $4}' ${INFILE}|sort -n > ${OUTDIR}/Email
+awk '/Document/ {print $3}' ${INFILE}|sort -n > ${OUTDIR}/Document
+awk '/IPv4/ {print $4}' ${INFILE}|ipsort > ${OUTDIR}/IPv4
+awk '/MX/ {print $4}' ${INFILE}|sort -n > ${OUTDIR}/MX
+awk '/URL/ {print $3}' ${INFILE}|sort -n > ${OUTDIR}/URL
+awk '/NS R/ {print $4}' ${INFILE}|sort -n > ${OUTDIR}/NS
+awk '/Website/ {print $3}' ${INFILE}|sort -n > ${OUTDIR}/Website
