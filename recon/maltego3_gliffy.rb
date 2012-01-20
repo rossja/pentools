@@ -52,7 +52,7 @@ puts "#{head}"
 # ----------------------------------------------------
 # open the google results page and scrape it
 # ----------------------------------------------------
-rslt = Nokogiri::HTML(open("http://www.google.com/search?q=inurl%3Agliffy.com%2Fpublish+#{qterm}"))
+rslt = Nokogiri::HTML(open("http://www.google.com/search?q=inurl%3Apublish+site%3Agliffy.com+#{qterm}"))
 
 # ----------------------------------------------------
 # search results page for hits (using css selector)
