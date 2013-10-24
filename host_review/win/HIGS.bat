@@ -3,6 +3,9 @@ REM ---------------------------------------------
 REM Host Information Gathering Script (Windows Edition)
 REM Written by Jason Ross <algorythm@gmail.com>
 REM ---------------------------------------------
+REM Version: 0.1
+REM Last Modified: 2010.11.04
+REM ---------------------------------------------
 REM Simple Windows batch file to gather system
 REM information for use during a host config
 REM review, or as an aid to Incident Response.
@@ -21,24 +24,6 @@ REM    Windows 7 Professional (32 bit)
 REM    Windows 7 Professional (64 bit)
 REM    Windows XP SP3
 REM    Windows XP SP2
-REM ---------------------------------------------
-REM This program is free software: you can redistribute it and/or modify
-REM it under the terms of the GNU General Public License as published by
-REM the Free Software Foundation, either version 3 of the License, or
-REM (at your option) any later version.
-REM
-REM This program is distributed in the hope that it will be useful,
-REM but WITHOUT ANY WARRANTY; without even the implied warranty of
-REM MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-REM GNU General Public License for more details.
-REM
-REM You should have received a copy of the GNU General Public License
-REM along with this program.  If not, see <http://www.gnu.org/licenses/>.
-REM ---------------------------------------------
-REM Copyright 2010 Jason Ross <algorythm /at/ gmail /dot/ com>
-REM ---------------------------------------------
-REM Version: 0.1
-REM Last Modified: 2010.11.04
 REM ---------------------------------------------
 md %COMPUTERNAME%
 cd %COMPUTERNAME%
@@ -130,6 +115,16 @@ echo ================= >> at.txt
 at >> at.txt
 echo Done!
 echo.
+
+
+
+echo ================= > at.txt
+echo Checking installed updates
+echo ================= >> at.txt
+dism /online /get-packages /format:table /English >packages.txt
+echo Done!
+echo.
+
 
 echo Collecting logs, this may take a bit...
 ..\psloglist -x system > system.log
