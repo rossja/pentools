@@ -22,12 +22,11 @@
 # ----------------------------------------------------
 # Copyright 2010 Jason Ross <algorythm /at/ gmail /dot/ com>
 # ----------------------------------------------------
-# version: 0.1
+# version: 0.2
 # ----------------------------------------------------
 iface="eth0"
 
-wget -O src_ip http://whatismyip.org
-echo -e "\n" >> src_ip
+wget -O - http://ipfaggot.com|awk -F\< '/bos.png/ {print $1}' >src_ip
 
 # create the directory structure
 mkdir nmap nessus svcs
@@ -35,11 +34,11 @@ mkdir nmap/output
 
 # -------------------------------------
 # create the initial nmap scan script
-echo -e "#!/bin/bash\nsudo nmap -e ${iface} -vvv -A -sS -PN -T3 --max-rate 300 --min-rate 100 --max-retries 3 --top-ports 1000 --defeat-rst-ratelimit -oA output/initial_scan -iL ../targets.txt" > nmap/initial_scan
+echo -e "#!/bin/bash\nsudo nmap -e ${iface} -A -sS -Pn -T3 --max-rate 300 --min-rate 100 --max-retries 3 --top-ports 10000 --defeat-rst-ratelimit -oA output/initial_scan -iL ../targets.txt" > nmap/initial_scan
 chmod +x nmap/initial_scan
 
 # create the nmap misc_scans script
-echo -e "#!/bin/bash\nsudo nmap -e ${iface} -vvv -PN -sS --max-rate 350 -pT:80,443,8000,8080,8443,8888 -oA output/web_svcs -iL ../targets.txt \n\nsudo nmap -e ${iface} -vvv -PN -sS --max-rate 350 -pT:49,65,389,636,1812,1813 -oA output/auth_svcs -iL ../targets.txt\n\nsudo nmap -e ${iface} -vvv -PN -T4 --max-rate 350 -sU -pU:49,53,65,69,123,137,139,161,1812,1813,5060 -oA output/select_udp -iL ../targets.txt\n\nsudo nmap -sP -iL ../targets.txt -oG output/ping_sweep" > nmap/misc_scans
+echo -e "#!/bin/bash\nsudo nmap -e ${iface} -Pn -sS --max-rate 350 -pT:80,443,8000,8080,8443,8888 -oA output/web_svcs -iL ../targets.txt \n\nsudo nmap -e ${iface} -Pn -sS --max-rate 350 -pT:49,65,389,636,1812,1813 -oA output/auth_svcs -iL ../targets.txt\n\nsudo nmap -e ${iface} -Pn -T4 --max-rate 350 -sU -pU:49,53,65,69,111,123,137,139,161,1812,1813,5060 -oA output/select_udp -iL ../targets.txt\n\nsudo nmap -sP -iL ../targets.txt -oG output/ping_sweep" > nmap/misc_scans
 chmod +x nmap/misc_scans
 
 # create the icmp_scans script
