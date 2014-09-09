@@ -20,27 +20,34 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # ----------------------------------------------------
-# Copyright 2010 Jason Ross <algorythm /at/ gmail /dot/ com>
+# Copyright 2010 - 2014 Jason Ross <algorythm /at/ gmail /dot/ com>
 # ----------------------------------------------------
-# version: 0.2
+# version: 0.3
 # ----------------------------------------------------
 iface="eth0"
-
-wget -O - http://ipfaggot.com|awk -F\< '/bos.png/ {print $1}' >src_ip
+targets="targets.txt"
 
 # create the directory structure
-mkdir nmap nessus svcs
+mkdir nmap svcs
 mkdir nmap/output
 
 # -------------------------------------
-# create the initial nmap scan script
-echo -e "#!/bin/bash\nsudo nmap -e ${iface} -A -sS -Pn -T3 --max-rate 300 --min-rate 100 --max-retries 3 --top-ports 10000 --defeat-rst-ratelimit -oA output/initial_scan -iL ../targets.txt" > nmap/initial_scan
-chmod +x nmap/initial_scan
+# create the top 1000 ports script
+echo -e "#!/bin/bash\nsudo nmap -e ${iface} -A -sS -n -T4 --host-timeout 120 --max-retries 3 --top-ports 1000 -O --osscan-limit --open --reason -vvv -oA output/initial_scan -iL ${targets}" > nmap/top1k
+chmod +x nmap/top1k
 
-# create the nmap misc_scans script
-echo -e "#!/bin/bash\nsudo nmap -e ${iface} -Pn -sS --max-rate 350 -pT:80,443,8000,8080,8443,8888 -oA output/web_svcs -iL ../targets.txt \n\nsudo nmap -e ${iface} -Pn -sS --max-rate 350 -pT:49,65,389,636,1812,1813 -oA output/auth_svcs -iL ../targets.txt\n\nsudo nmap -e ${iface} -Pn -T4 --max-rate 350 -sU -pU:49,53,65,69,111,123,137,139,161,1812,1813,5060 -oA output/select_udp -iL ../targets.txt\n\nsudo nmap -sP -iL ../targets.txt -oG output/ping_sweep" > nmap/misc_scans
-chmod +x nmap/misc_scans
+# create the authentication services script
+echo -e "#!/bin/bash\nsudo nmap -e ${iface} -n -sS -T4 --host-timeout 120 --max-retries 3 --open --reason -vvv -pT:49,65,389,636,1812,1813 -oA output/auth_svcs -iL ${targets}" > nmap/auth_svcs_scan
+chmod +x nmap/auth_svcs_scan
+
+# create the selected UDP ports script
+echo -e "sudo nmap -e ${iface} -n -sU -T4 --host-timeout 120 --max-retries 3 -pU:49,53,65,69,111,123,137,139,161,1812,1813,5060 -oA output/select_udp -iL ${targets}" > nmap/select_udp_scan
+chmod +x nmap/select_udp_scan
+
+# create the ping sweep script
+echo -e "sudo nmap -sP -iL ../targets.txt -oG output/ping_sweep" > nmap/ping_sweep
+chmod +x nmap/ping_sweep
 
 # create the icmp_scans script
-echo -e "#!/bin/bash\nsudo nmap -e ${iface} -PE -oA output/icmp_echo -iL ../targets.txt\n\nsudo nmap -e ${iface} -PP -oA output/icmp_timestamp -iL ../targets.txt\n\nsudo nmap -e ${iface} -PM -oA output/icmp_netmask -iL ../targets.txt\n" > nmap/icmp_scans
+echo -e "#!/bin/bash\nsudo nmap -e ${iface} -PE -oA output/icmp_echo -iL ${targets}\n\nsudo nmap -e ${iface} -PP -oA output/icmp_timestamp -iL ${targets}\n\nsudo nmap -e ${iface} -PM -oA output/icmp_netmask -iL ${targets}\n" > nmap/icmp_scans
 chmod +x nmap/icmp_scans

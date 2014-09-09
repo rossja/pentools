@@ -1,13 +1,17 @@
 This repository is just a dumping place for me to put various scripts
-and tools I've written to help me perform penetration testing and
-vulnerability scanning. 
+and tools that help me perform penetration testing and vulnerability 
+scanning. Some of them are kinda cool, some of them are kinda dumb,
+but they're handy at times.
 
 My main goal is to put code I find useful someplace other than on
 my own gear, since I tend to rebuild frequently, and suck at making
 sure I've kept all my crap so that I have it after I'm done.
 
-Everything I put here was written by myself, and is released under
-the GPL (see file: COPYING for more information on that.)
+Everything I put here is released under the GPL.
+(see file: COPYING for more information on that.)
+If you'd like to contribute, be aware of that, and if
+you're cool with releasing your contribution under the
+same, it'll be added.
 
 Questions/Comments/Tips/Requests are welcome and can be sent to me
 via my email address: <algorythm /at/ gmail /dot/ com>

@@ -15,7 +15,6 @@ REM ---------------------------------------------
 REM Depends on the psloglist tool from SysInternals
 REM (now Microsoft). It's part of the PSTools suite
 REM http://technet.microsoft.com/en-us/sysinternals/bb896649.aspx
-REM I've included it in this repo for convenience
 REM ---------------------------------------------
 REM Tested on the following platforms:
 REM Server:
