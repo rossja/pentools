@@ -1,0 +1,28 @@
+#!/bin/bash
+# ----------------------------------------------------
+# simple script that uses the Cymru ASN mapping whois
+# interface to map back AS owners to a bunch of IP
+# addresses stored 1 address per line in a plain text
+# file. The file must have the word 'begin' as the
+# first line, and 'end' as the last line.
+# ----------------------------------------------------
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# ----------------------------------------------------
+# Copyright 2010 Jason Ross <algorythm /at/ gmail /dot/ com>
+# ----------------------------------------------------
+# version: 0.1
+# ----------------------------------------------------
+
+FILE=$1
+netcat whois.cymru.com 43 < ${FILE} | sort -n > ${FILE}_ip2asn.txt
