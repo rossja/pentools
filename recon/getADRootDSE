@@ -1,0 +1,15 @@
+#!/bin/bash
+# ------------------------------------
+# simple script to anonymously query
+# Active Directory for the RootDSE
+# This is useful for enumerating
+# hostname, as well as basic domain
+# information for the network
+# ------------------------------------
+# version: 0.1.0
+# author: @rossja <algorythm@gmail.com>
+# ------------------------------------
+
+ADSRVR=$1  # Active Directory server or IP
+
+ldapsearch -o nettimeout=5 -x -LLL -h ${ADSRVR} -b '' -s base 'objectClass=*'
