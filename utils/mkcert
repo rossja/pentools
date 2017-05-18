@@ -1,0 +1,3 @@
+#!/bin/bash
+# oneliner to make a self-signed cert good for 14 days
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 14 -nodes
