@@ -88,4 +88,4 @@ http.createServer(function(request, response) {
 
 }).listen(proxyPort);
 
-console.log("proxy is up and running on port 8080!");
+console.log("proxy is up and running on port " + proxyPort + "!");
