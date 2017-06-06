@@ -1,0 +1,21 @@
+#!/bin/bash
+# --------------------------------------
+# converts a java keystore file to PEM
+# requires: jdk and openssl
+# --------------------------------------
+# thanks to: 
+# https://www.calazan.com/how-to-convert-a-java-keystore-jks-to-pem-format/
+# --------------------------------------
+
+JKSFILE=$1
+PEMFILE=$2
+
+keytool -importkeystore \
+        -srckeystore ${JKSFILE} \
+        -destkeystore ${JKSFILE}.p12 \
+        -srcstoretype jks \
+        -deststoretype pkcs12
+
+openssl pkcs12 \
+        -in ${JKSFILE}.p12 
+        -out $PEMFILE
