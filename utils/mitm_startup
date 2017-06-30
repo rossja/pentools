@@ -1,0 +1,25 @@
+#!/bin/bash
+# script to intercept all traffic from an interface and redirect it to a local port
+#
+# mostly stolen from mallory: <https://github.com/intrepidusgroup/mallory>
+
+mitm_iface='ppp0' # interface to mitm
+xtrn_iface='eth1' # interface for outbound traffic
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -F
+iptables -X
+iptables -Z
+iptables -t nat -F
+iptables -t nat -X
+iptables -t nat -Z
+iptables -t mangle -F
+iptables -t mangle -X
+iptables -t mangle -Z
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -t nat -A POSTROUTING -o ${mitm_iface} -j MASQUERADE
+iptables -t nat -A POSTROUTING -o ${xtrn_iface} -j MASQUERADE
+iptables -t nat -A PREROUTING -j REDIRECT -i ${mitm_iface} -p tcp -m tcp --to-ports 20755
+iptables -t nat -A PREROUTING -j REDIRECT -i ${mitm_iface} -p udp -m udp --to-ports 20755

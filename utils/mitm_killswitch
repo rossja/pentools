@@ -1,0 +1,19 @@
+#!/bin/bash
+# script to disable ip forwarding and reset all iptables rules
+#
+# mostly stolen from mallory: <https://github.com/intrepidusgroup/mallory>
+
+echo 0 > /proc/sys/net/ipv4/ip_forward
+
+iptables -F
+iptables -X
+iptables -Z
+iptables -t nat -F
+iptables -t nat -X
+iptables -t nat -Z
+iptables -t mangle -F
+iptables -t mangle -X
+iptables -t mangle -Z
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -P OUTPUT ACCEPT
