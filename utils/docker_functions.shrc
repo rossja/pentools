@@ -1,0 +1,23 @@
+# handy functions for docker
+# source them in ~/.bashrc to use
+function docker-killall {
+  # find all containers and stop them
+  for container in `docker ps -a |awk '{print $1}'|grep -v CONTAINER`; do
+    docker stop $container
+  done
+
+  # remove all stopped containers
+  docker ps -aq --no-trunc | xargs docker rm
+}
+
+function docker-rmstale {
+  for stale in `docker images | grep '^<none>' | awk '{print $3}'`; do
+    docker rmi $stale
+  done
+}
+
+function docker-rmvols {
+  for vol in `docker volume ls|awk '/^VOLUME/ {print $2}'`; do
+    docker volume rm $vol
+  done
+}
