@@ -10,21 +10,41 @@ proxies = {
     'https': 'http://127.0.0.1:8080'
 }
 
-requrl = ""
+requrl = "http://api.test/v0/hello"
+
+token = "NOTOKEN"
 
 headers = {
     "Cookie": '',
-    "Referer": ""
-    "Authorization": "Bearer <token>"
+    "Referer": "",
+    "Authorization": "Bearer " + token,
+}
+
+data = {
+    "testdata": "testing, testing, 1..2..3"
 }
 
 # with proxy
+# GET
 res = requests.get(requrl, headers = headers, proxies=proxies, verify=False)
+# POST
+#res = requests.post(requrl, headers = headers, proxies=proxies, verify=False, data=data)
+# OPTIONS
+#res = requests.options(requrl, headers = headers, proxies=proxies, verify=False)
 
 # without proxy
-#res = requests.get(requrl, headers = headers)
+# GET
+#res = requests.get(requrl, headers = headers, proxies=proxies, verify=False)
+# POST
+#res = requests.post(requrl, headers = headers, proxies=proxies, verify=False, data=data)
+# OPTIONS
+#res = requests.options(requrl, headers = headers, proxies=proxies, verify=False)
 
 # print out the response
-print( "\nstatus: %s" % res.status_code )
-print( "\nresponse headers:\n%s\n" % str(res.headers) )
-print( "\nresponse body:\n%s\n" % res.text )
+print( "\nSTATUS: %s" % res.status_code )
+#print( "\nresponse headers:\n%s\n" % str(res.headers) )
+print( "\nHEADERS:")
+for key in res.headers:
+    print("%s: %s" % (key, res.headers[key]) )
+print( "\nBODY:\n%s" % res.text )
+print("\nNo more data in response.")
