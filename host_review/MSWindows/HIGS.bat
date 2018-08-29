@@ -161,9 +161,9 @@ echo Dumping the registry
 echo =================
 reg export HKLM hklm.reg
 reg export HKCU hkcu.reg
-reg export HKCU hkcr.reg
-reg export HKCU hku.reg
-reg export HKCU hkcc.reg
+reg export HKCR hkcr.reg
+reg export HKU hku.reg
+reg export HKCC hkcc.reg
 echo Done!
 echo.
 
