@@ -22,4 +22,3 @@ reg export HKCU hkcu.reg
 reg export HKCR hkcr.reg
 reg export HKU hku.reg
 reg export HKCC hkcc.reg
-del reg.txt tmplist.txt
