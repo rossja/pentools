@@ -1,11 +1,7 @@
-@echo off
 md %COMPUTERNAME%
-cd %COMPUTERNAME%
-echo Output Created on %DATE% at %TIME% >> basic-info.txt
 echo Domain: %USERDOMAIN >> basic-info.txt
 echo This host: %COMPUTERNAME% >> basic-info.txt
 echo This script running as: %USERNAME% >> basic-info.txt
-echo Environment Variables: >> basic-info.txt
 set >> basic-info.txt
 reg export HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall reg.txt
 find "DisplayName" reg.txt |find /V "ParentDisplayName" > tmplist.txt
