@@ -3,8 +3,8 @@ REM ---------------------------------------------
 REM Host Information Gathering Script (Windows Edition)
 REM Written by Jason Ross <algorythm@gmail.com>
 REM ---------------------------------------------
-REM Version: 0.3
-REM Last Modified: 2014.06.03
+REM Version: 0.4
+REM Last Modified: 2018.08.31
 REM ---------------------------------------------
 REM Simple Windows batch file to gather system
 REM information for use during a host config
@@ -12,14 +12,15 @@ REM review, or as an aid to Incident Response.
 REM All output goes into a folder which named
 REM whatever the %COMPUTERNAME% variable is set to.
 REM ---------------------------------------------
-REM Depends on the psloglist tool from SysInternals
-REM (now Microsoft). It's part of the PSTools suite
-REM http://technet.microsoft.com/en-us/sysinternals/bb896649.aspx
+REM Depends on the psloglist and procdump tools from SysInternals
+REM https://docs.microsoft.com/en-us/sysinternals/
 REM ---------------------------------------------
 REM Tested on the following platforms:
 REM Server:
 REM    Windows 2003 SP2
 REM    Windows Server 2012
+REM    Windows Server 2012 R2
+REM    Windows Server 2016
 REM Desktop:
 REM    Windows 7 Professional (32 bit)
 REM    Windows 7 Professional (64 bit)
@@ -44,7 +45,7 @@ REM
 REM You should have received a copy of the GNU General Public License
 REM along with this program.  If not, see <http://www.gnu.org/licenses/>.
 REM ---------------------------------------------
-REM Copyright 2010-2014 Jason Ross <algorythm /at/ gmail /dot/ com>
+REM Copyright 2010-2018 Jason Ross <algorythm /at/ gmail /dot/ com>
 REM ---------------------------------------------
 md %COMPUTERNAME%
 cd %COMPUTERNAME%
@@ -65,6 +66,12 @@ set >> basic-info.txt
 echo Done!
 echo.
 
+echo =================
+echo Detecting OS version
+echo =================
+wmic os get caption,osarchitecture,buildnumber /value >> os-version.txt
+echo Done!
+echo.
 
 echo =================
 echo Detecting installed software
@@ -91,13 +98,6 @@ echo Done!
 echo.
 
 
-echo Enumerating network servers visible to this host
-echo ================= > net-view.txt
-net view >> net-view.txt
-echo Done!
-echo.
-
-
 echo =================
 echo Gathering local user and group information
 echo =================
@@ -108,17 +108,10 @@ echo.
 
 
 echo =================
-echo Gathering shared folder information
-echo =================
-net view \\%COMPUTERNAME% >> shares.txt
-echo Done!
-echo.
-
-
-echo =================
 echo Gathering IP configuration
 echo =================
 ipconfig /all >> ipconfig.txt
+ipconfig /displaydns >> dnscache.txt
 echo Done!
 echo.
 
@@ -131,13 +124,38 @@ echo Done!
 echo.
 
 
-echo =================
-echo Checking scheduled jobs
-echo =================
-at >> at.txt
+echo Enumerating network information visible to this host
+echo ================= > net-view.txt
+net view >> net-view.txt
+net view %LOGONSERVER% >> net-view-logonserver.txt
+nbtstat -n >> nbtstat-local.txt
+nbtstat -S >> nbtstat-sessions.txt
 echo Done!
 echo.
 
+
+echo =================
+echo Gathering local shared folder information
+echo =================
+net view \\%COMPUTERNAME% >> shares.txt
+echo Done!
+echo.
+
+
+echo =================
+echo Gathering mapped drives information
+echo =================
+net use >> mapped-drives.txt
+echo Done!
+echo.
+
+
+echo =================
+echo Checking scheduled jobs
+echo =================
+schtasks /query /fo LIST /v >> schtasks.txt
+echo Done!
+echo.
 
 
 echo =================
@@ -151,7 +169,7 @@ echo.
 echo =================
 echo Checking IIS sites
 echo =================
-%windir%\system32\inetsrv\AppCmd.exe list site > IIS_sites.txt
+%systemroot%\system32\inetsrv\AppCmd.exe list sites >> IIS_sites.txt
 echo Done!
 echo.
 
@@ -159,15 +177,30 @@ echo.
 echo =================
 echo Dumping the registry
 echo =================
-reg export HKLM hklm.reg
-reg export HKCU hkcu.reg
-reg export HKCR hkcr.reg
-reg export HKU hku.reg
-reg export HKCC hkcc.reg
+md regdump
+reg export HKLM regdump\hklm.reg
+reg export HKCU regdump\hkcu.reg
+reg export HKCR regdump\hkcr.reg
+reg export HKU regdump\hku.reg
+reg export HKCC regdump\hkcc.reg
 echo Done!
 echo.
 
 
+echo =================
+echo Dumping SAM and Security hives
+echo =================
+md secretsdump
+reg save hklm\sam secretsdump\sam.save 
+reg save hklm\security secretsdump\security.save 
+reg save hklm\system secretsdump\system.save
+echo Done!
+echo.
+
+
+REM ---------------------------------------------
+REM wrapup
+REM ---------------------------------------------
 echo =================
 echo Cleaning up temporary files
 echo =================
@@ -175,8 +208,11 @@ del reg.txt tmplist.txt
 echo Done!
 echo.
 
+cd ..
 
 echo =================
-echo Host Information Gathering Script finished.
+echo Host Information Gathering Script finished!
+echo To copy the data to another location run:
+echo "xcopy /E /H /I %COMPUTERNAME% <other-location>"
 echo =================
 echo.
