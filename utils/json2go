@@ -1,0 +1,110 @@
+#!/bin/bash
+# =======================================================
+# json2go: a script to turn json data into go structures
+# author: rossja <algorythm@gmail.com
+# version: 0.2
+# license: GPL-3.0
+# credits: mholt (https://github.com/mholt/json-to-go)
+# =======================================================
+NODE="/usr/local/bin/node"          # skewed for Mac OSX installed via brew
+JSON2GO="$HOME/bin/json-to-go.js"   # https://github.com/mholt/json-to-go
+OPTIND=1 # reset the index
+
+# =======================================================
+# functions
+# =======================================================
+urlparse() {
+# takes a URL (which generates json output) as a param
+# fetches the URL, and parses it into a go struct
+  curl -s $1 | $NODE $JSON2GO
+}
+
+fileparse() {
+# takes a filename containing json as a param
+# and parses it into a go struct
+  echo "in function: $1"
+  cat "$1" | $NODE $JSON2GO
+}
+
+useage() {
+# spits out the useage
+  echo "Useage: $0 [-u <url> | -j <jsondata>]"
+}
+
+# =======================================================
+# main()
+# =======================================================
+
+# -------------------------------------------------------
+# basic sanity check
+# -------------------------------------------------------
+
+# -------------------------------------------------------
+# print usage if no options were specified
+# -------------------------------------------------------
+[[ ( -z "$1" || $# -eq 0 ) ]] && useage && exit 2
+
+# -------------------------------------------------------
+# check for getopt with long options support
+# -------------------------------------------------------
+! getopt --test > /dev/null
+if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
+    echo "`getopt --test` failed in this environment"
+    echo "this usually means your system's getopt doesn't support long options"
+    echo "if this is a mac, try installing gnu-getopt and see if that helps"
+    exit 1
+fi
+
+# -------------------------------------------------------
+# parse dem args!
+# -------------------------------------------------------
+OPTS=u:f:j:h?
+LOPTS=url:,file:,json:,help
+NAME='json2go'
+
+PARSED=$(getopt --options=$OPTS --longoptions=$LOPTS --name $NAME -- "$@")
+if [ $? != 0 ]; then 
+  echo "Failed parsing options"
+  exit 2
+else
+  eval set -- "$PARSED"
+fi
+
+# -------------------------------------------------------
+# set the variables for population later
+# -------------------------------------------------------
+url=""
+file=""
+
+# -------------------------------------------------------
+# extract the args
+# -------------------------------------------------------
+while true; do
+  case "$1" in
+    -u|--url)
+      url="$2"
+      shift 2;
+      urlparse $url 
+      break
+    ;;
+    -f|--file)
+      file="$2"
+      shift 2;
+      fileparse $file 
+      break
+    ;;
+    -h|--help|-\?)
+      useage
+      shift; exit 0
+    ;;
+    --)  # end of the opts
+      shift;
+       break
+    ;;
+    *)   # something went wrong
+      echo "error!"
+      useage
+      exit 3
+    ;;
+  esac
+done
