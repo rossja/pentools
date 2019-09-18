@@ -27,22 +27,22 @@ portrule = shortport.portnumber(10255, "tcp", "open")
 action = function(host, port)
   -- Perform a GET request for /pods
 	local path = "/pods"
-	stdnse.debug(1 "attempting HTTP GET to %s", path)
+	stdnse.debug1("attempting HTTP GET to %s", path)
   local response = http.get(host,port,path)
   local result = {}
 
   -- Fail if there is no data in the response, the response body or if the HTTP status code is not successful
   if not response or not response.status or response.status ~= 200 or not response.body then
-    stdnse.debug(1, "Failed to retrieve: %s", path)
+    stdnse.debug1("Failed to retrieve: %s", path)
     return
   end
 
   -- Fail if this doesn't appear to be Kubernetes PodList
   if not string.match(response.body, "\"kind\":\"PodList\"") then
-    stdnse.debug(1, "%s does not appear to be a Kubernetes PodList", path)
+    stdnse.debug1("%s does not appear to be a Kubernetes PodList", path)
     return
 	end
-	
+
 	result = stdnse.output_table()
 	result["Pods"] = response.body
 	return result
