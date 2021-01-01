@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # --------------------------------------
 # converts a java keystore file to PEM
 # requires: jdk and openssl
