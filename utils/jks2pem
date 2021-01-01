@@ -17,5 +17,5 @@ keytool -importkeystore \
         -deststoretype pkcs12
 
 openssl pkcs12 \
-        -in "${JKSFILE}.p12" 
+        -in "${JKSFILE}.p12" \
         -out "$PEMFILE"
