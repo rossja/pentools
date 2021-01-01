@@ -3,7 +3,7 @@
 # converts a java keystore file to PEM
 # requires: jdk and openssl
 # --------------------------------------
-# thanks to: 
+# thanks to:
 # https://www.calazan.com/how-to-convert-a-java-keystore-jks-to-pem-format/
 # --------------------------------------
 
